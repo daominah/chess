@@ -22,8 +22,8 @@ type Board struct {
 	bbBlackBishop bitboard
 	bbBlackKnight bitboard
 	bbBlackPawn   bitboard
-	whiteSqs      bitboard
-	blackSqs      bitboard
+	whiteSqs      bitboard // white pieces
+	blackSqs      bitboard // black pieces
 	emptySqs      bitboard
 	whiteKingSq   Square
 	blackKingSq   Square

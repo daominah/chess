@@ -217,6 +217,7 @@ func TestInvalidMoves(t *testing.T) {
 		if moveIsValid(mt.pos, mt.m, false) {
 			log.Println(mt.pos.String())
 			log.Println(mt.pos.board.Draw())
+			//log.Println("move: ", mt.m)
 			t.Fatalf("expected move %s to be invalid", mt.m)
 		}
 	}

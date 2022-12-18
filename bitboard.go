@@ -43,9 +43,9 @@ func (b bitboard) String() string {
 
 // Draw returns visual representation of the bitboard useful for debugging.
 func (b bitboard) Draw() string {
-	s := "\n A B C D E F G H\n"
+	s := "\n |A B C D E F G H\n"
 	for r := 7; r >= 0; r-- {
-		s += Rank(r).String()
+		s += Rank(r).String() + "|"
 		for f := 0; f < numOfSquaresInRow; f++ {
 			sq := NewSquare(File(f), Rank(r))
 			if b.Occupied(sq) {

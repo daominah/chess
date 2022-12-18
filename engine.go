@@ -28,6 +28,8 @@ var (
 	promoPieceTypes = []PieceType{Queen, Rook, Bishop, Knight}
 )
 
+// :param first: first means this func return immediately when it found the first move
+// (for faster check status legal)
 func standardMoves(pos *Position, first bool) []*Move {
 	// compute allowed destination bitboard
 	bbAllowed := ^pos.board.whiteSqs
@@ -272,18 +274,31 @@ func diaAttack(occupied bitboard, sq Square) bitboard {
 	pos := bbForSquare(sq)
 	dMask := bbDiagonals[sq]
 	adMask := bbAntiDiagonals[sq]
-	return linearAttack(occupied, pos, dMask) | linearAttack(occupied, pos, adMask)
+	dia1 := linearAttack(occupied, pos, dMask)
+	//println("dia1", dia1.Draw())
+	dia2 := linearAttack(occupied, pos, adMask)
+	//println("dia2", dia2.Draw())
+	return dia1 | dia2
 }
 
+// horizontal vertical attack
 func hvAttack(occupied bitboard, sq Square) bitboard {
 	pos := bbForSquare(sq)
 	rankMask := bbRanks[Square(sq).Rank()]
+	rankRay := linearAttack(occupied, pos, rankMask)
+	//println("rankRay", rankRay.Draw())
 	fileMask := bbFiles[Square(sq).File()]
-	return linearAttack(occupied, pos, rankMask) | linearAttack(occupied, pos, fileMask)
+	fileRay := linearAttack(occupied, pos, fileMask)
+	//println("fileRay", fileRay.Draw())
+	return rankRay | fileRay
 }
 
 func linearAttack(occupied, pos, mask bitboard) bitboard {
-	oInMask := occupied & mask
+	oInMask := occupied & mask // potential blockers
+	//println("potential blockers", oInMask.Draw())
+	//println("o-2r", (oInMask - 2*pos).Draw())
+	// https://www.chessprogramming.org/Hyperbola_Quintessence:
+	// lineAttacks =   (o-2r) ^ reverse( o'-2r')
 	return ((oInMask - 2*pos) ^ (oInMask.Reverse() - 2*pos.Reverse()).Reverse()) & mask
 }
 
